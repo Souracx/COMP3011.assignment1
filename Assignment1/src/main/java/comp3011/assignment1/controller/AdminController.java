@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import comp3011.assignment1.model.UptimeResponse;
 import comp3011.assignment1.service.UptimeService;
 
+
 @RestController
 @RequestMapping("/api/v1/admin")
 
