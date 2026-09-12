@@ -29,5 +29,4 @@ public class UptimeService {
 		double uptimeSeconds = Duration.between(serverStart, now).toNanos() / 1_000_000_000.0; 
 		return new UptimeResponse(serverStart, now, uptimeSeconds); 
 	}
-
 }
