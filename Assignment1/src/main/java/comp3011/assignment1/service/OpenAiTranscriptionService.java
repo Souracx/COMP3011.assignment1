@@ -1,5 +1,7 @@
 package comp3011.assignment1.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
@@ -111,12 +113,14 @@ public class OpenAiTranscriptionService implements TranscriptionService {
             }
 
         } else {
-            headers.setContentType(
-                    MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         }
 
         return new HttpEntity<>(audio.getResource(), headers);
     }
+    
+    //Test case logger
+    private static final Logger log = LoggerFactory.getLogger(OpenAiTranscriptionService.class); 
 
     /**
      * Records any token usage returned by the Cloud service.
@@ -138,8 +142,10 @@ public class OpenAiTranscriptionService implements TranscriptionService {
         if (response.usage().outputTokens() ==null) { 
         	outputTokens = 0; 
         }else { 
-        	outputTokens = response.usage().inputTokens(); 
+        	outputTokens = response.usage().outputTokens(); 
         }
+        
+        tokenUsageTracker.recordUsage(inputTokens, outputTokens); 
     }
 
     /**
