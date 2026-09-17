@@ -24,6 +24,9 @@ import comp3011.assignment1.model.OpenAiTranscriptionResponse;
  */
 @Service
 public class OpenAiTranscriptionService implements TranscriptionService {
+	
+    //Test case logger
+    private static final Logger log = LoggerFactory.getLogger(OpenAiTranscriptionService.class); 
 
     private final RestClient openAiRestClient;
     private final TokenUsageTracker tokenUsageTracker;
@@ -78,6 +81,8 @@ public class OpenAiTranscriptionService implements TranscriptionService {
             return response.text();
 
         } catch (RestClientResponseException e) {
+        	
+        	log.warn("OpenAI rejected the request with status{}: {}", e.getStatusCode().value(), e.getResponseBodyAsString());
 
             throw new ResponseStatusException(
                     HttpStatus.BAD_GATEWAY, "Cloud transcription service returned status " + e.getStatusCode().value());
@@ -119,8 +124,7 @@ public class OpenAiTranscriptionService implements TranscriptionService {
         return new HttpEntity<>(audio.getResource(), headers);
     }
     
-    //Test case logger
-    private static final Logger log = LoggerFactory.getLogger(OpenAiTranscriptionService.class); 
+
 
     /**
      * Records any token usage returned by the Cloud service.
@@ -128,6 +132,7 @@ public class OpenAiTranscriptionService implements TranscriptionService {
     private void recordUsage(OpenAiTranscriptionResponse response) {
 
         if (response.usage() == null) {
+        	log.info("OpenAI returned no usage block; token totals were not updated"); 
             return;
         }
 

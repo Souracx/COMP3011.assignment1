@@ -4,9 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Speech to Text</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Speech to Text</h1>
-    <p>Recording interface coming soon.</p>
+    <main class="page">
+        <header class="page-header">
+            <h1>Speech to Text</h1>
+            <p class="intro">Record from your microphone and get a written transcript, using OpenAi Api</p>
+        </header>
+
+        <section class="panel" aria-label="Recorder">
+            <div class="recorder-main">
+                <!--
+                    One toggle button handles both start and stop.
+                    Its visible label is also its accessible name, and it switches between
+                    "Start Recording" and "Stop Recording", so screen readers and automated
+                    test agents always see the action the button will perform next.
+                    The pill graphic is decorative, so it is hidden from assistive technology.
+                -->
+                <button id="recordToggle" class="record-toggle" type="button" data-state="idle">
+                    <span class="pill" aria-hidden="true">
+                        <span class="wave">
+                            <span class="bar"></span>
+                            <span class="bar"></span>
+                            <span class="bar"></span>
+                            <span class="bar"></span>
+                            <span class="bar"></span>
+                            <span class="bar"></span>
+                            <span class="bar"></span>
+                            <span class="bar"></span>
+                            <span class="bar"></span>
+                            <span class="bar"></span>
+                            <span class="bar"></span>
+                        </span>
+                        <span class="record-icon">
+                            <span class="record-core"></span>
+                        </span>
+                    </span>
+                    <span id="recordLabel" class="record-label">Start Recording</span>
+                </button>
+
+                <!-- Hidden from screen readers so they aren't interrupted by every tick. -->
+                <span id="timer" class="timer" data-state="idle" aria-hidden="true">00:00</span>
+            </div>
+
+            <p id="status" class="status" data-state="idle" role="status" aria-live="polite">Ready to record.</p>
+        </section>
+
+        <section class="panel" aria-labelledby="transcriptHeading">
+            <div class="panel-header">
+                <h2 id="transcriptHeading">Transcription</h2>
+                <button id="copyButton" class="secondary-button" type="button" disabled>
+                    <span id="copyLabel">Copy</span><span class="visually-hidden"> transcript</span>
+                </button>
+            </div>
+
+            <p id="transcript" class="transcript" data-empty="true" aria-live="polite">No transcription yet.</p>
+
+            <ul id="transcriptMeta" class="transcript-meta" hidden>
+                <li id="metaWords"></li>
+                <li id="metaDuration"></li>
+                <li id="metaLatency"></li>
+            </ul>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
 </body>
 </html>

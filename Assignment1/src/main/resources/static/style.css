@@ -1,0 +1,423 @@
+:root {
+    --canvas: #f6f5f8;
+    --surface: #ffffff;
+    --line: #e5e1eb;
+    --ink: #1c1726;
+    --ink-soft: #5f5870;
+    --ink-faint: #8f889b;
+    --plum: #4e2372;
+    --plum-dark: #3b1758;
+    --wave: #f7dcf6;
+    --live: #d93025;
+    --error: #b3261e;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--canvas);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+.page {
+    max-width: 44rem;
+    margin: 0 auto;
+    padding: 4rem 1.5rem 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.page-header {
+    margin-bottom: 0.75rem;
+}
+
+h1 {
+    margin: 0;
+    font-size: 1.75rem;
+    line-height: 1.2;
+    font-weight: 650;
+    letter-spacing: -0.015em;
+}
+
+.intro {
+    margin: 0.375rem 0 0;
+    color: var(--ink-soft);
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+/* Panels  */
+
+.panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 0.75rem;
+}
+
+/* Recorder panel*/
+
+.recorder-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1.5rem;
+}
+
+.record-toggle {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 0.25rem;
+    margin: -0.25rem;
+    border: 0;
+    border-radius: 2.5rem;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.record-toggle:focus-visible {
+    outline: 3px solid var(--plum);
+    outline-offset: 3px;
+}
+
+.record-toggle:disabled {
+    cursor: progress;
+}
+
+.record-label {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.record-toggle:disabled .record-label {
+    color: var(--ink-soft);
+}
+
+.pill {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    width: 13.5rem;
+    height: 4rem;
+    padding: 0 0.75rem 0 1.5rem;
+    border-radius: 999px;
+    background: var(--plum);
+    transition: transform 160ms ease, background-color 200ms ease;
+}
+
+.record-toggle:hover:not(:disabled) .pill {
+    background: var(--plum-dark);
+}
+
+.record-toggle:active:not(:disabled) .pill {
+    transform: scale(0.97);
+}
+
+.record-toggle[data-state="starting"] .pill {
+    opacity: 0.8;
+}
+
+.record-toggle[data-state="recording"] .pill {
+    animation: halo 1.8s ease-out infinite;
+}
+
+@keyframes halo {
+    0%   { box-shadow: 0 0 0 0 rgba(78, 35, 114, 0.28); }
+    100% { box-shadow: 0 0 0 12px rgba(78, 35, 114, 0); }
+}
+
+
+.wave {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 2.75rem;
+}
+
+
+.bar {
+    --level: 1;
+    width: 4px;
+    height: max(4px, calc(var(--max) * var(--level)));
+    border-radius: 999px;
+    background: var(--wave);
+    transition: height 90ms linear;
+}
+
+.bar:nth-child(1),
+.bar:nth-child(11) { --max: 9px;  --d: 5; }
+.bar:nth-child(2),
+.bar:nth-child(10) { --max: 16px; --d: 4; }
+.bar:nth-child(3),
+.bar:nth-child(9)  { --max: 22px; --d: 3; }
+.bar:nth-child(4),
+.bar:nth-child(8)  { --max: 28px; --d: 2; }
+.bar:nth-child(5),
+.bar:nth-child(7)  { --max: 32px; --d: 1; }
+.bar:nth-child(6)  { --max: 34px; --d: 0; }
+
+.record-toggle[data-state="processing"] .bar {
+    animation: thinking 900ms ease-in-out infinite;
+    animation-delay: calc(var(--d) * 90ms);
+}
+
+@keyframes thinking {
+    0%, 100% { height: max(4px, calc(var(--max) * 0.3)); }
+    50%      { height: var(--max); }
+}
+
+/*  Record / stop icon */
+
+.record-icon {
+    position: relative;
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 2.5px solid #ffffff;
+    border-radius: 50%;
+    transition: border-color 200ms ease;
+}
+
+.record-core {
+    width: 1.3rem;
+    height: 1.3rem;
+    border-radius: 50%;
+    background: #ffffff;
+    transition: width 200ms ease, height 200ms ease, border-radius 200ms ease;
+}
+
+.record-toggle[data-state="recording"] .record-core {
+    width: 0.95rem;
+    height: 0.95rem;
+    border-radius: 0.2rem;
+}
+
+.record-icon::after {
+    content: "";
+    position: absolute;
+    inset: -2.5px;
+    border: 2.5px solid transparent;
+    border-radius: 50%;
+}
+
+.record-toggle[data-state="processing"] .record-icon {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.record-toggle[data-state="processing"] .record-core {
+    width: 0.55rem;
+    height: 0.55rem;
+}
+
+.record-toggle[data-state="processing"] .record-icon::after {
+    border-top-color: #ffffff;
+    animation: spin 800ms linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Timer and status */
+
+.timer {
+    font-size: 1.5rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+    color: var(--ink-faint);
+}
+
+.timer[data-state="recording"] {
+    color: var(--live);
+}
+
+.timer[data-state="processing"] {
+    color: var(--ink-soft);
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    margin: 0;
+    padding: 0.75rem 1.5rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
+}
+
+.status::before {
+    content: "";
+    flex: none;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--ink-faint);
+}
+
+.status[data-state="recording"] {
+    color: var(--ink);
+}
+
+.status[data-state="recording"]::before {
+    background: var(--live);
+    animation: blink 1.2s ease-in-out infinite;
+}
+
+.status[data-state="processing"]::before {
+    background: var(--plum);
+}
+
+.status[data-state="error"] {
+    color: var(--error);
+}
+
+.status[data-state="error"]::before {
+    background: var(--error);
+}
+
+@keyframes blink {
+    50% { opacity: 0.3; }
+}
+
+/* Transcription panel*/ 
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 1rem 0.75rem 1.5rem;
+    border-bottom: 1px solid var(--line);
+}
+
+.panel-header h2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.secondary-button {
+    padding: 0.375rem 0.875rem;
+    border: 1px solid var(--line);
+    border-radius: 0.5rem;
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.secondary-button:hover:not(:disabled) {
+    background: var(--canvas);
+}
+
+.secondary-button:disabled {
+    color: var(--ink-faint);
+    cursor: not-allowed;
+}
+
+.secondary-button:focus-visible {
+    outline: 3px solid var(--plum);
+    outline-offset: 2px;
+}
+
+.transcript {
+    margin: 0;
+    min-height: 8rem;
+    padding: 1.25rem 1.5rem;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    white-space: pre-wrap;
+}
+
+.transcript[data-empty="true"] {
+    color: var(--ink-faint);
+}
+
+.transcript-meta {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 0.25rem;
+    margin: 0;
+    padding: 0.75rem 1.5rem;
+    list-style: none;
+    border-top: 1px solid var(--line);
+    font-size: 0.875rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-soft);
+}
+
+.transcript-meta[hidden] {
+    display: none;
+}
+
+.transcript-meta li + li {
+    margin-left: 0.875rem;
+    padding-left: 0.875rem;
+    border-left: 1px solid var(--line);
+}
+
+
+@media (max-width: 36rem) {
+    .page {
+        padding-top: 2.5rem;
+    }
+
+    .recorder-main {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+    .pill,
+    .record-core {
+        transition: none;
+    }
+
+    .record-toggle[data-state="recording"] .pill {
+        animation: none;
+        box-shadow: 0 0 0 4px rgba(78, 35, 114, 0.2);
+    }
+
+    .record-toggle[data-state="processing"] .bar {
+        animation: none;
+        height: max(4px, calc(var(--max) * 0.5));
+    }
+
+    .record-toggle[data-state="processing"] .record-icon::after,
+    .status[data-state="recording"]::before {
+        animation: none;
+    }
+}
